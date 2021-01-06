@@ -16,39 +16,33 @@ class App extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  getEvents(term, page) {
+  getEvents(term) {
     axios
-      .get(`http://localhost:3000/events?q=${term}&_page=${page}`)
+      .get(`http://localhost:3000/events?q=${term}`)
       .then((events) => {
-        this.setState({ currEvents: events });
+        this.setState({ data: events.data });
       })
       .catch((err) => console.log(err));
   }
 
   handleChange(e) {
-    // e.preventDefault();
+    e.preventDefault();
     this.setState({ search: e.target.value });
   }
 
-  handleSubmit() {
+  handleSubmit(e) {
+    e.preventDefault();
     this.getEvents(this.state.search);
   }
 
   render() {
     return (
       <div>
-        {/* <form> */}
-        <input type="text" placeholder="search" value={this.state.search} onChange={this.handleChange} />
-        <button
-          type="submit"
-          onClick={() => {
-            this.handleSubmit();
-          }}
-        >
-          search
-        </button>
-        {/* </form> */}
-        {/* <ReactPaginate
+        <form onSubmit={this.handleSubmit}>
+          <input type="text" placeholder="search" value={this.state.search} onChange={this.handleChange} />
+          <button type="submit">search</button>
+        </form>
+        <ReactPaginate
           previousLabel={'previous'}
           nextLabel={'next'}
           breakLabel={'...'}
@@ -60,7 +54,7 @@ class App extends React.Component {
           containerClassName={'pagination'}
           subContainerClassName={'pages pagination'}
           activeClassName={'active'}
-        /> */}
+        />
       </div>
     );
   }
