@@ -6,9 +6,11 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      search : '',
-      page   : 1,
-      data   : []
+      search    : '',
+      page      : 1,
+      data      : [],
+      offset    : 0,
+      pageCount : 0
     };
 
     this.getEvents = this.getEvents.bind(this);
@@ -16,11 +18,14 @@ class App extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  getEvents(term) {
+  getEvents(term, page) {
     axios
-      .get(`http://localhost:3000/events?q=${term}`)
+      .get(`http://localhost:3000/events?q=${term}&_page=${page}`)
       .then((events) => {
-        this.setState({ data: events.data });
+        this.setState({
+          data      : events.data,
+          pageCount : Math.ceil(events.headers["x-total-count"] / 10)
+        });
       })
       .catch((err) => console.log(err));
   }
@@ -32,7 +37,20 @@ class App extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.getEvents(this.state.search);
+    this.getEvents(this.state.search, this.state.page);
+  }
+
+  componentDidMount() {
+    this.getEvents(this.state.search, this.state.page);
+  }
+
+  handlePageClick(data) {
+    let selected = data.selected;
+    let offset = Math.ceil(selected * 10);
+
+    this.setState({ offset: offset }, () => {
+      this.getEvents(this.state.search, this.state.page);
+    });
   }
 
   render() {
