@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import ReactPaginate from 'react-paginate';
+import List from './List.jsx';
 
 class App extends React.Component {
   constructor(props) {
@@ -16,11 +17,12 @@ class App extends React.Component {
     this.getEvents = this.getEvents.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handlePageClick = this.handlePageClick.bind(this);
   }
 
-  getEvents(term, page) {
+  getEvents(term, start) {
     axios
-      .get(`http://localhost:3000/events?q=${term}&_page=${page}`)
+      .get(`http://localhost:3000/events?q=${term}&_start=${start}&_limit=10`)
       .then((events) => {
         this.setState({
           data      : events.data,
@@ -37,20 +39,21 @@ class App extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    this.getEvents(this.state.search, this.state.page);
+    this.getEvents(this.state.search, this.state.offset);
   }
 
   componentDidMount() {
-    this.getEvents(this.state.search, this.state.page);
+    this.getEvents(this.state.search, this.state.offset);
   }
 
   handlePageClick(data) {
     let selected = data.selected;
     let offset = Math.ceil(selected * 10);
 
-    this.setState({ offset: offset }, () => {
-      this.getEvents(this.state.search, this.state.page);
-    });
+    this.setState({ offset: offset },
+      this.getEvents(this.state.search, this.state.offset)
+    );
+    console.log(this.state.data)
   }
 
   render() {
@@ -60,6 +63,7 @@ class App extends React.Component {
           <input type="text" placeholder="search" value={this.state.search} onChange={this.handleChange} />
           <button type="submit">search</button>
         </form>
+        <List data={this.state.data} />
         <ReactPaginate
           previousLabel={'previous'}
           nextLabel={'next'}
