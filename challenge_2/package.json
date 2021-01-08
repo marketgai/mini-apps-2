@@ -1,0 +1,27 @@
+{
+  "name": "challenge_2",
+  "version": "1.0.0",
+  "description": "crypto charting tool",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js",
+    "webpack": "webpack -w"
+  },
+  "author": "marcus lee",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-react": "^7.12.10",
+    "babel-loader": "^8.2.2",
+    "cli": "^1.0.1",
+    "express": "^4.17.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "webpack": "^5.11.1"
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.3.1"
+  }
+}
